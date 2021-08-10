@@ -14,7 +14,7 @@ build:
   script:
     - docker info
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker pull $IMAGE
+    - docker pull $IMAGE > /dev/null && echo "success" || echo "new"
     - docker build -t $IMAGE .
     - docker push $IMAGE
 
