@@ -1,0 +1,53 @@
+stages:
+  - build
+  - test
+  - publish
+
+variables:
+  IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+
+build:
+  image: docker:20.10.8
+  services:
+    - docker:20.10.8-dind
+  stage: build
+  script:
+    - docker info
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -t $IMAGE .
+    - docker push $IMAGE
+
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
+publish_latest:
+  image: docker:20.10.8
+  services:
+    - docker:20.10.8-dind
+  stage: publish
+  script:
+    - docker info
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker pull $IMAGE
+    - echo "$DOCKER_KEY" | docker login --username fkmatsuda --password-stdin
+    - docker tag $IMAGE fkmatsuda/golang-builder:latest
+    - docker push fkmatsuda/golang-builder:latest
+  only:
+    refs:
+      - main
+
+publish_tag:
+  image: docker:20.10.8
+  services:
+    - docker:20.10.8-dind
+  stage: publish
+  script:
+    - docker info
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker pull $IMAGE
+    - echo "$DOCKER_KEY" | docker login --username fkmatsuda --password-stdin
+    - docker tag $IMAGE fkmatsuda/golang-builder:$CI_COMMIT_TAG
+    - docker push fkmatsuda/golang-builder:$CI_COMMIT_TAG
+  only:
+    - tags
+
