@@ -21,4 +21,4 @@ FROM golang:1.16.7-alpine3.14
 
 ENV GOLANG_VERSION 1.16.7
 
-RUN apk add --no-cache --update npm make; 
+RUN apk add --no-cache npm make; 
