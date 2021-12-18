@@ -20,5 +20,4 @@
 FROM golang:1.17.5-alpine3.15
 
 ENV GOLANG_VERSION 1.17.5
-
-RUN apk add --no-cache npm make; 
+RUN apk add --no-cache npm make git upx; 
