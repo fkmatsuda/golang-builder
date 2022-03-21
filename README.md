@@ -3,7 +3,7 @@
 golang-builder docker image
 
 ## Moved
-https://git.fkmatsuda.dev/go/golang-builder
+https://git.fkmatsuda.dev/fkmatsuda.dev/docker/golang-builder
 
 ## Name
 GO Builder Docker Image
